@@ -1,0 +1,84 @@
+<html>
+  <head>
+    <style>
+      #game-area {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+      }
+
+      .triangle {
+        width: 0;
+        height: 0;
+        border-left: 50px solid transparent;
+        border-right: 50px solid transparent;
+        border-bottom: 100px solid blue;
+        position: absolute;
+      }
+
+      #timer {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-area"></div>
+    <div id="timer">Timer: 00:30</div>
+    <script>
+      const gameArea = document.querySelector("#game-area");
+      const timerDisplay = document.querySelector("#timer");
+      let time = 30;
+      let timerInterval;
+
+      // Function to generate random X and Y coordinates within the game area
+      function getRandomCoordinates() {
+        const x = Math.floor(Math.random() * gameArea.offsetWidth);
+        const y = Math.floor(Math.random() * gameArea.offsetHeight);
+        return [x, y];
+      }
+
+      // Function to add leading zeros to the timer display
+      function padTime(time) {
+        return time.toString().padStart(2, "0");
+      }
+
+      // Function to update the timer display
+      function updateTimer() {
+        const minutes = padTime(Math.floor(time / 60));
+        const seconds = padTime(time % 60);
+        timerDisplay.innerHTML = `Timer: ${minutes}:${seconds}`;
+      }
+
+      // Function to generate a new triangle and add it to the game area
+      function generateTriangle() {
+        const [x, y] = getRandomCoordinates();
+        const triangle = document.createElement("div");
+        triangle.classList.add("triangle");
+        triangle.style.left = `${x}px`;
+        triangle.style.top = `${y}px`;
+        triangle.addEventListener("click", () => {
+          triangle.remove();
+          time += 1;
+          generateTriangle();
+        });
+        gameArea.appendChild(triangle);
+      }
+
+      // Start the game
+      generateTriangle();
+      generateTriangle();
+      timerInterval = setInterval(() => {
+        time--;
+        updateTimer();
+        if (time === 0) {
+          clearInterval(timerInterval);
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>
+
